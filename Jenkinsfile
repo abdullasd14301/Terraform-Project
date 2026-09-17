@@ -47,9 +47,9 @@ pipeline {
 
     stage('Apply') {
       when {
-        allOf {
-          branch 'main'
-          expression { params.TERRAFORM_ACTION == 'apply' }
+        expression {
+          params.TERRAFORM_ACTION == 'apply' &&
+          (env.BRANCH_NAME == 'main' || env.GIT_BRANCH == 'main' || env.GIT_BRANCH == 'origin/main')
         }
       }
       steps {
@@ -65,9 +65,9 @@ pipeline {
 
     stage('Destroy') {
       when {
-        allOf {
-          branch 'main'
-          expression { params.TERRAFORM_ACTION == 'destroy' }
+        expression {
+          params.TERRAFORM_ACTION == 'destroy' &&
+          (env.BRANCH_NAME == 'main' || env.GIT_BRANCH == 'main' || env.GIT_BRANCH == 'origin/main')
         }
       }
       steps {

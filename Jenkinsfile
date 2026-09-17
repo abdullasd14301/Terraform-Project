@@ -53,7 +53,7 @@ pipeline {
         }
       }
       steps {
-        input message: 'Apply Terraform changes?', ok: 'Apply'
+        input message: 'MANUAL APPROVAL REQUIRED: Apply Terraform changes to AWS?', ok: 'Approve Apply'
         withCredentials([
           string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
           string(credentialsId: 'AWS_SECRET_ACCESS_KEY_ID', variable: 'AWS_SECRET_ACCESS_KEY')
@@ -71,7 +71,7 @@ pipeline {
         }
       }
       steps {
-        input message: 'Destroy all Terraform-managed resources?', ok: 'Destroy'
+        input message: 'MANUAL APPROVAL REQUIRED: Destroy all Terraform-managed AWS resources?', ok: 'Approve Destroy'
         withCredentials([
           string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
           string(credentialsId: 'AWS_SECRET_ACCESS_KEY_ID', variable: 'AWS_SECRET_ACCESS_KEY')

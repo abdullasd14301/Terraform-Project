@@ -29,11 +29,19 @@ terraform destroy -var-file=terraform.tfvars
 
 ## GitHub Actions
 
-Add the repository secrets `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY_ID` with an IAM access key and secret key. The workflow maps them to the AWS credentials action, runs plan for pull requests and pushes, and applies only on a push to `main`.
+Create an S3 bucket for Terraform state, then add these repository secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY_ID`, and `TF_STATE_BUCKET`. The workflow uses the state key `terraform-assignment1/terraform.tfstate`. The AWS IAM user must be able to read and write that S3 object as well as manage the Terraform resources.
+
+To destroy resources with the dedicated workflow, open **Actions** and select **Terraform Destroy**, then click **Run workflow**. Review the destroy plan, and approve the protected `terraform-destroy` environment before the destroy job runs.
+
+If a local state file already contains the deployed resources, migrate it to the S3 backend from this directory before using GitHub Actions:
+
+```bash
+terraform init -migrate-state -backend-config="bucket=YOUR_STATE_BUCKET" -backend-config="key=terraform-assignment1/terraform.tfstate" -backend-config="region=us-east-1"
+```
 
 ## Jenkins
 
-Create two Jenkins Secret Text credentials with IDs `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY_ID`. The `Jenkinsfile` binds them for Terraform as `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Configure a multibranch pipeline from this repository. Choose the `TERRAFORM_ACTION` build parameter to run `plan`, `apply`, or `destroy`. The `apply` and `destroy` actions are restricted to `main` and require manual approval.
+Create Jenkins Secret Text credentials with IDs `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY_ID`, and `TF_STATE_BUCKET`. The `Jenkinsfile` uses the shared S3 state key `terraform-assignment1/terraform.tfstate`. Configure a multibranch pipeline from this repository. Choose the `TERRAFORM_ACTION` build parameter to run `plan`, `apply`, or `destroy`. The `apply` and `destroy` actions are restricted to `main` and require manual approval.
 
 ## Production notes
 

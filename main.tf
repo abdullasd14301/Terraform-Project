@@ -105,7 +105,7 @@ resource "aws_lb" "nlb" {
   load_balancer_type               = "network"
   internal                         = false
   subnets                          = module.vpc.public_subnets
-  enable_deletion_protection      = false
+  enable_deletion_protection       = false
   enable_cross_zone_load_balancing = true
 }
 
